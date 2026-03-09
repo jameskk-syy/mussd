@@ -41,12 +41,11 @@ menu.startState({
 menu.state('passwordPrompt', {
     run: () => {
         const username = menu.val;
-        fs.appendFileSync('debug.log', `[${new Date().toISOString()}] [passwordPrompt] Captured username: ${username}\n`);
 
+        // Synchronous store
         if (!sessions[menu.args.sessionId]) sessions[menu.args.sessionId] = {};
         sessions[menu.args.sessionId]['username'] = username;
 
-        fs.appendFileSync('debug.log', `[${new Date().toISOString()}] [passwordPrompt] Username saved: ${username}\n`);
         menu.con('Please enter your password:');
     },
     next: {
@@ -57,20 +56,17 @@ menu.state('passwordPrompt', {
 menu.state('login', {
     run: async () => {
         const password = menu.val;
-        fs.appendFileSync('debug.log', `[${new Date().toISOString()}] [login] Captured password: ${password}\n`);
 
+        // Synchronous retrieval
         const username = sessions[menu.args.sessionId] ? sessions[menu.args.sessionId]['username'] : null;
-        fs.appendFileSync('debug.log', `[${new Date().toISOString()}] [login] Retrieved username: ${username}\n`);
 
         if (!username) {
-            fs.appendFileSync('debug.log', `[${new Date().toISOString()}] [login] Error: Username is blank in session!\n`);
             return menu.end('Login process failed. Please start over.');
         }
 
         try {
             const result = await UserModel.authenticate(username, password);
             if (result.success) {
-                fs.appendFileSync('debug.log', `[${new Date().toISOString()}] [login] Authentication successful for ${username}\n`);
                 await new Promise((resolve) => {
                     menu.session.set('token', result.token, () => {
                         menu.session.set('entityId', result.entityId, resolve);
@@ -78,11 +74,9 @@ menu.state('login', {
                 });
                 menu.con(`Welcome back ${result.user.name}!\n1. Savings\n2. Loans\n3. Account Settings`);
             } else {
-                fs.appendFileSync('debug.log', `[${new Date().toISOString()}] [login] Authentication failed: ${result.message}\n`);
                 menu.end('Login failed. ' + result.message);
             }
         } catch (error) {
-            fs.appendFileSync('debug.log', `[${new Date().toISOString()}] [login] Auth Error: ${error.message}\n`);
             menu.end('An error occurred during login. Please try again later.');
         }
     },

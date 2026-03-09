@@ -13,7 +13,6 @@ router.post('/', (req, res) => {
 
     if (!sessionId || !phoneNumber) {
         console.warn(`[USSD Warning] Missing required fields. SID: ${sessionId}, Phone: ${phoneNumber}`);
-        // Note: Africa's Talking might send different field names in some environments
     }
 
     try {
