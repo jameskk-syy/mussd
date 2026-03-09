@@ -12,7 +12,7 @@ app.set('trust proxy', 1);
 app.use(helmet());
 
 app.use((req, res, next) => {
-    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    //console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
     next();
 });
 
@@ -32,10 +32,10 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/ussd', ussdRouter);
 app.use((req, res) => {
-    console.warn(`404 Not Found: ${req.method} ${req.url}`);
+    //console.warn(`404 Not Found: ${req.method} ${req.url}`);
     res.status(404).send(`Cannot ${req.method} ${req.url} - Check your endpoint configuration.`);
 });
 
 app.listen(PORT, () => {
-    console.log(`USSD Server is running on port ${PORT}`);
+    //console.log(`USSD Server is running on port ${PORT}`);
 });

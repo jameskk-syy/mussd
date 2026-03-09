@@ -8,20 +8,20 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    console.log(`[USSD Request] Payload: ${JSON.stringify(req.body)}`);
+    ////console.log(`[USSD Request] Payload: ${JSON.stringify(req.body)}`);
     const { sessionId, phoneNumber, text } = req.body;
 
     if (!sessionId || !phoneNumber) {
-        console.warn(`[USSD Warning] Missing required fields. SID: ${sessionId}, Phone: ${phoneNumber}`);
+        ////console.warn(`[USSD Warning] Missing required fields. SID: ${sessionId}, Phone: ${phoneNumber}`);
     }
 
     try {
         ussdMenu.run(req.body, ussdResult => {
-            console.log(`[USSD Response] Result: ${ussdResult}`);
+            //console.log(`[USSD Response] Result: ${ussdResult}`);
             res.send(ussdResult);
         });
     } catch (error) {
-        console.error(`[USSD Error] Exception in ussdMenu.run:`, error);
+        //console.error(`[USSD Error] Exception in ussdMenu.run:`, error);
         res.send("END A system error occurred. Please try again later.");
     }
 });
