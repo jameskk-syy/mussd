@@ -8,19 +8,25 @@ let menu = new UssdMenu();
 const sessions = {};
 menu.sessionConfig({
     start: (sessionId, callback) => {
+        console.log(`[Session Start] SID: ${sessionId}`);
         if (!(sessionId in sessions)) sessions[sessionId] = {};
         callback();
     },
     end: (sessionId, callback) => {
+        console.log(`[Session End] SID: ${sessionId}`);
         delete sessions[sessionId];
         callback();
     },
     set: (sessionId, key, value, callback) => {
+        console.log(`[Session Set] SID: ${sessionId}, Key: ${key}, Value: ${value}`);
+        if (!sessions[sessionId]) sessions[sessionId] = {};
         sessions[sessionId][key] = value;
         callback();
     },
     get: (sessionId, key, callback) => {
-        callback(null, sessions[sessionId][key]);
+        const value = sessions[sessionId] ? sessions[sessionId][key] : null;
+        console.log(`[Session Get] SID: ${sessionId}, Key: ${key}, Value: ${value}`);
+        callback(null, value);
     }
 });
 menu.startState({

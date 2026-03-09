@@ -8,21 +8,23 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
+    console.log(`[USSD Request] Payload: ${JSON.stringify(req.body)}`);
     const { sessionId, phoneNumber, text } = req.body;
 
-    if (!sessionId || typeof sessionId !== 'string') {
-        return res.status(400).send('Bad Request: Missing or invalid sessionId');
-    }
-    if (!phoneNumber || typeof phoneNumber !== 'string') {
-        return res.status(400).send('Bad Request: Missing or invalid phoneNumber');
-    }
-    if (text === undefined || typeof text !== 'string') {
-        return res.status(400).send('Bad Request: Missing or invalid text');
+    if (!sessionId || !phoneNumber) {
+        console.warn(`[USSD Warning] Missing required fields. SID: ${sessionId}, Phone: ${phoneNumber}`);
+        // Note: Africa's Talking might send different field names in some environments
     }
 
-    ussdMenu.run(req.body, ussdResult => {
-        res.send(ussdResult);
-    });
+    try {
+        ussdMenu.run(req.body, ussdResult => {
+            console.log(`[USSD Response] Result: ${ussdResult}`);
+            res.send(ussdResult);
+        });
+    } catch (error) {
+        console.error(`[USSD Error] Exception in ussdMenu.run:`, error);
+        res.send("END A system error occurred. Please try again later.");
+    }
 });
 
 module.exports = router;
