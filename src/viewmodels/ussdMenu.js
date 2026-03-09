@@ -25,7 +25,7 @@ menu.sessionConfig({
 });
 menu.startState({
     run: () => {
-        menu.con('Welcome to USSD Banking.\nPlease enter your password to login:');
+        menu.con('Welcome to Kolenge Sacco.\nPlease enter your password to login:');
     },
     next: {
         '*[0-9]+': 'login'
