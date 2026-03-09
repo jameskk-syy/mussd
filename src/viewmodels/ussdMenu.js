@@ -38,8 +38,11 @@ menu.state('login', {
         const phoneNumber = menu.args.phoneNumber;
 
         try {
-            const result = await UserModel.authenticate(phoneNumber, password);
+            const result = await UserModel.authenticate(menu.val, menu.val); // The user usually enters password at this stage
             if (result.success) {
+                // Store token and entityId in the session
+                menu.session.set('token', result.token);
+                menu.session.set('entityId', result.entityId);
                 menu.con(`Welcome back ${result.user.name}!\n1. Savings\n2. Loans\n3. Account Settings`);
             } else {
                 menu.end('Login failed. Invalid password.');

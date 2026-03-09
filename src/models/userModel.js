@@ -1,36 +1,35 @@
-// Mock data for users (Normally this would come from an API/Database)
-const users = [
-    { phoneNumber: '+1234567890', password: '1234', name: 'John Doe' },
-    { phoneNumber: '+0987654321', password: '0000', name: 'Jane Smith' }
-];
+const axios = require('axios');
 
 class UserModel {
-    static async authenticate(phoneNumber, password) {
-        // Simulate API call
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const user = users.find(u => u.phoneNumber === phoneNumber && u.password === password);
-                if (user) {
-                    resolve({ success: true, user });
-                } else {
-                    resolve({ success: false, message: 'Invalid password' });
-                }
-            }, 300);
-        });
-    }
+    static async authenticate(username, password) {
+        try {
+            const response = await axios.post(process.env.AUTH_API_URL, {
+                username: username,
+                password: password
+            });
 
-    static async updatePassword(phoneNumber, newPassword) {
-        return new Promise((resolve) => {
-            setTimeout(() => {
-                const user = users.find(u => u.phoneNumber === phoneNumber);
-                if (user) {
-                    user.password = newPassword;
-                    resolve({ success: true, message: 'Password updated successfully' });
-                } else {
-                    resolve({ success: false, message: 'User not found' });
-                }
-            }, 300);
-        });
+            if (response.data && response.data.entity && response.data.entity.token) {
+                return {
+                    success: true,
+                    token: response.data.entity.token,
+                    entityId: response.data.entity.entityId,
+                    user: {
+                        name: response.data.entity.firstName + ' ' + response.data.entity.lastName
+                    }
+                };
+            } else {
+                return {
+                    success: false,
+                    message: response.data.message || 'Invalid credentials'
+                };
+            }
+        } catch (error) {
+            console.error('Auth API Error:', error.response ? error.response.data : error.message);
+            return {
+                success: false,
+                message: 'Authentication service unavailable'
+            };
+        }
     }
 }
 

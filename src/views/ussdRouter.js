@@ -8,8 +8,6 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
-    console.log('USSD Route Matched: POST /ussd');
-    // Basic Input Validation for USSD payload
     const { sessionId, phoneNumber, text } = req.body;
 
     if (!sessionId || typeof sessionId !== 'string') {
@@ -22,7 +20,6 @@ router.post('/', (req, res) => {
         return res.status(400).send('Bad Request: Missing or invalid text');
     }
 
-    // Process valid USSD request
     ussdMenu.run(req.body, ussdResult => {
         res.send(ussdResult);
     });
