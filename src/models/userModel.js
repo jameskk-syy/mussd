@@ -3,10 +3,12 @@ const axios = require('axios');
 class UserModel {
     static async authenticate(username, password) {
         try {
-            const response = await axios.post(process.env.AUTH_API_URL, {
+            const payload = {
                 username: username,
                 password: password
-            });
+            };
+
+            const response = await axios.post(process.env.AUTH_API_URL, payload);
 
             if (response.data && response.data.entity && response.data.entity.token) {
                 return {

@@ -25,29 +25,58 @@ menu.sessionConfig({
 });
 menu.startState({
     run: () => {
-        menu.con('Welcome to Kolenge Sacco.\nPlease enter your password to login:');
+        menu.con('Welcome to Kolenge Sacco.\nPlease enter your username:');
     },
     next: {
-        '*[0-9]+': 'login'
+        '*': 'passwordPrompt'
+    }
+});
+
+menu.state('passwordPrompt', {
+    run: () => {
+        const username = menu.val;
+        fs.appendFileSync('debug.log', `[${new Date().toISOString()}] [passwordPrompt] Captured username: ${username}\n`);
+
+        if (!sessions[menu.args.sessionId]) sessions[menu.args.sessionId] = {};
+        sessions[menu.args.sessionId]['username'] = username;
+
+        fs.appendFileSync('debug.log', `[${new Date().toISOString()}] [passwordPrompt] Username saved: ${username}\n`);
+        menu.con('Please enter your password:');
+    },
+    next: {
+        '*': 'login'
     }
 });
 
 menu.state('login', {
     run: async () => {
         const password = menu.val;
-        const phoneNumber = menu.args.phoneNumber;
+        fs.appendFileSync('debug.log', `[${new Date().toISOString()}] [login] Captured password: ${password}\n`);
+
+        const username = sessions[menu.args.sessionId] ? sessions[menu.args.sessionId]['username'] : null;
+        fs.appendFileSync('debug.log', `[${new Date().toISOString()}] [login] Retrieved username: ${username}\n`);
+
+        if (!username) {
+            fs.appendFileSync('debug.log', `[${new Date().toISOString()}] [login] Error: Username is blank in session!\n`);
+            return menu.end('Login process failed. Please start over.');
+        }
 
         try {
-            const result = await UserModel.authenticate(menu.val, menu.val); // The user usually enters password at this stage
+            const result = await UserModel.authenticate(username, password);
             if (result.success) {
-                // Store token and entityId in the session
-                menu.session.set('token', result.token);
-                menu.session.set('entityId', result.entityId);
+                fs.appendFileSync('debug.log', `[${new Date().toISOString()}] [login] Authentication successful for ${username}\n`);
+                await new Promise((resolve) => {
+                    menu.session.set('token', result.token, () => {
+                        menu.session.set('entityId', result.entityId, resolve);
+                    });
+                });
                 menu.con(`Welcome back ${result.user.name}!\n1. Savings\n2. Loans\n3. Account Settings`);
             } else {
-                menu.end('Login failed. Invalid password.');
+                fs.appendFileSync('debug.log', `[${new Date().toISOString()}] [login] Authentication failed: ${result.message}\n`);
+                menu.end('Login failed. ' + result.message);
             }
         } catch (error) {
+            fs.appendFileSync('debug.log', `[${new Date().toISOString()}] [login] Auth Error: ${error.message}\n`);
             menu.end('An error occurred during login. Please try again later.');
         }
     },
