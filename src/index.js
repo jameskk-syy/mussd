@@ -7,18 +7,15 @@ const ussdRouter = require('./views/ussdRouter');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Trust proxy for Render/load balancers (needed for rate limiting to work correctly)
 app.set('trust proxy', 1);
 
 app.use(helmet());
 
-// Basic request logging
 app.use((req, res, next) => {
     console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
     next();
 });
 
-// Health check route
 app.get('/', (req, res) => {
     res.status(200).send('USSD Server is UP and Running!');
 });
@@ -34,8 +31,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/ussd', ussdRouter);
-
-// Catch-all 404 handler with logging
 app.use((req, res) => {
     console.warn(`404 Not Found: ${req.method} ${req.url}`);
     res.status(404).send(`Cannot ${req.method} ${req.url} - Check your endpoint configuration.`);
