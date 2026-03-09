@@ -3,7 +3,12 @@ const ussdMenu = require('../viewmodels/ussdMenu');
 
 const router = express.Router();
 
+router.get('/', (req, res) => {
+    res.status(200).send('USSD Endpoint is active. Send a POST request to this URL.');
+});
+
 router.post('/', (req, res) => {
+    console.log('USSD Route Matched: POST /ussd');
     // Basic Input Validation for USSD payload
     const { sessionId, phoneNumber, text } = req.body;
 
