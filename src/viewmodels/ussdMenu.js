@@ -27,20 +27,7 @@ menu.sessionConfig({
 });
 menu.startState({
     run: () => {
-        menu.con('Welcome to Kolenge Sacco.\nPlease enter your username:');
-    },
-    next: {
-        '*': 'passwordPrompt'
-    }
-});
-
-menu.state('passwordPrompt', {
-    run: () => {
-        const username = menu.val;
-        if (!sessions[menu.args.sessionId]) sessions[menu.args.sessionId] = {};
-        sessions[menu.args.sessionId]['username'] = username;
-
-        menu.con('Please enter your password:');
+        menu.con('Welcome to Kolenge Sacco.\nPlease enter your password:');
     },
     next: {
         '*': 'login'
@@ -50,11 +37,8 @@ menu.state('passwordPrompt', {
 menu.state('login', {
     run: async () => {
         const password = menu.val;
-        const username = sessions[menu.args.sessionId] ? sessions[menu.args.sessionId]['username'] : null;
-
-        if (!username) {
-            return menu.end('Login process failed. Please start over.');
-        }
+        const rawPhone = menu.args.phoneNumber || '';
+        const username = rawPhone.replace('+', '');
 
         try {
             const result = await UserModel.authenticate(username, password);
