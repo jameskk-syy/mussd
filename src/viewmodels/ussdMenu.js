@@ -59,17 +59,17 @@ menu.state('login', {
 
         // Synchronous retrieval
         const username = sessions[menu.args.sessionId] ? sessions[menu.args.sessionId]['username'] : null;
-        //console.log(`[Login Tracing] Attempting login for Username: ${username}, SID: ${menu.args.sessionId}`);
+        console.log(`[Login Tracing] Attempting login for Username: ${username}, SID: ${menu.args.sessionId}`);
 
         if (!username) {
-            //console.warn(`[Login Tracing] Username not found in session for SID: ${menu.args.sessionId}`);
+            console.warn(`[Login Tracing] Username not found in session for SID: ${menu.args.sessionId}`);
             return menu.end('Login process failed. Please start over.');
         }
 
         try {
-            //console.log(`[Login Tracing] Calling UserModel.authenticate...`);
+            console.log(`[Login Tracing] Calling UserModel.authenticate...`);
             const result = await UserModel.authenticate(username, password);
-            //console.log(`[Login Tracing] Auth Result: ${result.success ? 'Success' : 'Failure - ' + result.message}`);
+            console.log(`[Login Tracing] Auth Result: ${result.success ? 'Success' : 'Failure - ' + result.message}`);
             if (result.success) {
                 await new Promise((resolve) => {
                     menu.session.set('token', result.token, () => {
