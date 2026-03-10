@@ -18,7 +18,7 @@ class UserModel {
                 return {
                     success: true,
                     token: response.data.entity.token,
-                    entityId: response.data.entity.id,
+                    entityId: response.data.entity.entityId,
                     user: {
                         name: response.data.entity.firstName + ' ' + response.data.entity.lastName
                     }

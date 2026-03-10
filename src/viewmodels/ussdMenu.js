@@ -18,7 +18,7 @@ menu.sessionConfig({
     set: (sessionId, key, value, callback) => {
         if (!sessions[sessionId]) sessions[sessionId] = {};
         sessions[sessionId][key] = value;
-        callback();
+        if (callback) callback();
     },
     get: (sessionId, key, callback) => {
         const value = sessions[sessionId] ? sessions[sessionId][key] : null;
@@ -43,9 +43,9 @@ menu.state('login', {
         try {
             const result = await UserModel.authenticate(username, password);
             if (result.success) {
-                // Use menu.session.set to ensure callbacks are triggered
-                await new Promise(resolve => menu.session.set(menu.args.sessionId, 'token', result.token, resolve));
-                await new Promise(resolve => menu.session.set(menu.args.sessionId, 'entityId', result.entityId, resolve));
+                if (!sessions[menu.args.sessionId]) sessions[menu.args.sessionId] = {};
+                sessions[menu.args.sessionId]['token'] = result.token;
+                sessions[menu.args.sessionId]['entityId'] = result.entityId;
 
                 console.log(`[Login] Success. SID: ${menu.args.sessionId}, EntityId: ${result.entityId}`);
 
@@ -120,8 +120,8 @@ menu.state('savings_withdrawal_process', {
         const amount = menu.val;
         const phoneNumber = menu.args.phoneNumber;
 
-        // Use menu.session.get to retrieve entityId
-        const entityId = await new Promise(resolve => menu.session.get(menu.args.sessionId, 'entityId', (err, val) => resolve(val)));
+        // Reverting to direct sessions object for stability
+        const entityId = sessions[menu.args.sessionId] ? sessions[menu.args.sessionId]['entityId'] : null;
 
         console.log(`[Withdrawal] Request. SID: ${menu.args.sessionId}, EntityId: ${entityId}, Amount: ${amount}`);
 
@@ -175,8 +175,8 @@ menu.state('savings_deposit_process', {
         const amount = menu.val;
         const phoneNumber = menu.args.phoneNumber;
 
-        // Use menu.session.get to retrieve entityId
-        const entityId = await new Promise(resolve => menu.session.get(menu.args.sessionId, 'entityId', (err, val) => resolve(val)));
+        // Reverting to direct sessions object for stability
+        const entityId = sessions[menu.args.sessionId] ? sessions[menu.args.sessionId]['entityId'] : null;
 
         console.log(`[Deposit] Request. SID: ${menu.args.sessionId}, EntityId: ${entityId}, Amount: ${amount}`);
 
