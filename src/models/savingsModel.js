@@ -13,6 +13,7 @@ class SavingsModel {
         const username = phoneNumber.replace('+', '');
         const ref = 'REF' + Date.now();
         const msgId = 'MSG' + Date.now();
+        console.log(username, ref, msgId);
 
         const xml = `
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:vmt="http://VMTComponentModel/InterfaceSpecification/Interfaces/C4/VMTtoFSPService" xmlns:c4="http://VMTComponentModel/InterfaceSpecification/FSPDefined/Messages/C4/" xmlns:vmt1="http://schemas.datacontract.org/2004/07/VMT.BankingIntegration.FSIC4Simulator.Common">
