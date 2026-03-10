@@ -127,10 +127,13 @@ menu.state('savings_withdrawal_process', {
 
         const result = await SavingsModel.withdraw(phoneNumber, amount, entityId);
         if (result.success) {
-            menu.end(`Successfully withdrew $${amount}. New balance is $${result.newBalance.toFixed(2)}`);
+            menu.con(`Successfully withdrew $${amount}. New balance is $${result.newBalance.toFixed(2)}\n0. Back to Main Menu`);
         } else {
-            menu.end(`Error: ${result.message}`);
+            menu.con(`Error: ${result.message}\n0. Back to Main Menu`);
         }
+    },
+    next: {
+        '0': 'mainMenu'
     }
 });
 
@@ -152,12 +155,17 @@ menu.state('loans_repay_process', {
 menu.state('savings_balance', {
     run: async () => {
         const phoneNumber = menu.args.phoneNumber;
-        const result = await SavingsModel.getBalance(phoneNumber);
+        const entityId = sessions[menu.args.sessionId] ? sessions[menu.args.sessionId]['entityId'] : null;
+
+        const result = await SavingsModel.getBalance(phoneNumber, entityId);
         if (result.success) {
-            menu.end(`Your savings balance is $${result.balance.toFixed(2)}`);
+            menu.con(`Your savings balance is $${result.balance.toFixed(2)}\n0. Back to Main Menu`);
         } else {
-            menu.end(`Error: ${result.message}`);
+            menu.con(`Error: ${result.message}\n0. Back to Main Menu`);
         }
+    },
+    next: {
+        '0': 'mainMenu'
     }
 });
 
@@ -182,10 +190,13 @@ menu.state('savings_deposit_process', {
 
         const result = await SavingsModel.deposit(phoneNumber, amount, entityId);
         if (result.success) {
-            menu.end(`Successfully deposited $${amount}. New balance is $${result.newBalance.toFixed(2)}`);
+            menu.con(`Successfully deposited $${amount}. New balance is $${result.newBalance.toFixed(2)}\n0. Back to Main Menu`);
         } else {
-            menu.end(`Error: ${result.message}`);
+            menu.con(`Error: ${result.message}\n0. Back to Main Menu`);
         }
+    },
+    next: {
+        '0': 'mainMenu'
     }
 });
 
@@ -195,22 +206,30 @@ menu.state('savings_statement', {
         const result = await SavingsModel.getStatements(phoneNumber);
         if (result.success) {
             const statements = result.statements.slice(-3).join('\\n');
-            menu.end(`Recent Statements:\\n${statements || 'No statements available.'}`);
+            menu.con(`Recent Statements:\\n${statements || 'No statements available.'}\n0. Back to Main Menu`);
         } else {
-            menu.end(`Error: ${result.message}`);
+            menu.con(`Error: ${result.message}\n0. Back to Main Menu`);
         }
+    },
+    next: {
+        '0': 'mainMenu'
     }
 });
 
 menu.state('loans_active', {
     run: async () => {
         const phoneNumber = menu.args.phoneNumber;
-        const result = await LoanModel.getActiveLoans(phoneNumber);
+        const entityId = sessions[menu.args.sessionId] ? sessions[menu.args.sessionId]['entityId'] : null;
+
+        const result = await SavingsModel.getBalance(phoneNumber, entityId);
         if (result.success) {
-            menu.end(`You have ${result.activeLoans.length} active loans totaling $${result.totalActive.toFixed(2)}.`);
+            menu.con(`Your total active loan balance is $${result.loanBalance.toFixed(2)}\n0. Back to Main Menu`);
         } else {
-            menu.end(`Error: ${result.message}`);
+            menu.con(`Error: ${result.message}\n0. Back to Main Menu`);
         }
+    },
+    next: {
+        '0': 'mainMenu'
     }
 });
 
@@ -220,10 +239,13 @@ menu.state('loans_statement', {
         const result = await LoanModel.getStatements(phoneNumber);
         if (result.success) {
             const statements = result.statements.slice(-3).join('\\n');
-            menu.end(`Recent Loan Statements:\\n${statements || 'No statements available.'}`);
+            menu.con(`Recent Loan Statements:\\n${statements || 'No statements available.'}\n0. Back to Main Menu`);
         } else {
-            menu.end(`Error: ${result.message}`);
+            menu.con(`Error: ${result.message}\n0. Back to Main Menu`);
         }
+    },
+    next: {
+        '0': 'mainMenu'
     }
 });
 
@@ -242,10 +264,13 @@ menu.state('loans_apply_process', {
         const phoneNumber = menu.args.phoneNumber;
         const result = await LoanModel.applyLoan(phoneNumber, amount);
         if (result.success) {
-            menu.end(`Your loan application for $${amount} was successful. Total active loans: $${result.newTotal.toFixed(2)}.`);
+            menu.con(`Your loan application for $${amount} was successful. Total active loans: $${result.newTotal.toFixed(2)}.\n0. Back to Main Menu`);
         } else {
-            menu.end(`Error: ${result.message}`);
+            menu.con(`Error: ${result.message}\n0. Back to Main Menu`);
         }
+    },
+    next: {
+        '0': 'mainMenu'
     }
 });
 
@@ -264,10 +289,13 @@ menu.state('account_change_password_process', {
         const phoneNumber = menu.args.phoneNumber;
         const result = await UserModel.updatePassword(phoneNumber, newPassword);
         if (result.success) {
-            menu.end('Your password has been changed successfully.');
+            menu.con(`Your password has been changed successfully.\n0. Back to Main Menu`);
         } else {
-            menu.end(`Error: ${result.message}`);
+            menu.con(`Error: ${result.message}\n0. Back to Main Menu`);
         }
+    },
+    next: {
+        '0': 'mainMenu'
     }
 });
 
