@@ -127,7 +127,7 @@ menu.state('savings_withdrawal_process', {
 
         const result = await SavingsModel.withdraw(phoneNumber, amount, entityId);
         if (result.success) {
-            menu.con(`Successfully withdrew $${amount}. New balance is $${result.newBalance.toFixed(2)}\n0. Back to Main Menu`);
+            menu.con(`Successfully withdrew KSH ${amount}. New balance is KSH ${result.newBalance.toFixed(2)}\n0. Back to Main Menu`);
         } else {
             menu.con(`Error: ${result.message}\n0. Back to Main Menu`);
         }
@@ -159,7 +159,7 @@ menu.state('savings_balance', {
 
         const result = await SavingsModel.getBalance(phoneNumber, entityId);
         if (result.success) {
-            menu.con(`Your savings balance is $${result.balance.toFixed(2)}\n0. Back to Main Menu`);
+            menu.con(`Your savings balance is KSH ${result.balance.toFixed(2)}\n0. Back to Main Menu`);
         } else {
             menu.con(`Error: ${result.message}\n0. Back to Main Menu`);
         }
@@ -190,7 +190,7 @@ menu.state('savings_deposit_process', {
 
         const result = await SavingsModel.deposit(phoneNumber, amount, entityId);
         if (result.success) {
-            menu.con(`Successfully deposited $${amount}. New balance is $${result.newBalance.toFixed(2)}\n0. Back to Main Menu`);
+            menu.con(`Successfully deposited KSH ${amount}. New balance is KSH ${result.newBalance.toFixed(2)}\n0. Back to Main Menu`);
         } else {
             menu.con(`Error: ${result.message}\n0. Back to Main Menu`);
         }
@@ -223,7 +223,7 @@ menu.state('loans_active', {
 
         const result = await SavingsModel.getBalance(phoneNumber, entityId);
         if (result.success) {
-            menu.con(`Your total active loan balance is $${result.loanBalance.toFixed(2)}\n0. Back to Main Menu`);
+            menu.con(`Your total active loan balance is KSH ${result.loanBalance.toFixed(2)}\n0. Back to Main Menu`);
         } else {
             menu.con(`Error: ${result.message}\n0. Back to Main Menu`);
         }
@@ -264,7 +264,7 @@ menu.state('loans_apply_process', {
         const phoneNumber = menu.args.phoneNumber;
         const result = await LoanModel.applyLoan(phoneNumber, amount);
         if (result.success) {
-            menu.con(`Your loan application for $${amount} was successful. Total active loans: $${result.newTotal.toFixed(2)}.\n0. Back to Main Menu`);
+            menu.con(`Your loan application for KSH ${amount} was successful. Total active loans: KSH ${result.newTotal.toFixed(2)}.\n0. Back to Main Menu`);
         } else {
             menu.con(`Error: ${result.message}\n0. Back to Main Menu`);
         }
