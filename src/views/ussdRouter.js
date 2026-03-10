@@ -9,8 +9,6 @@ router.get('/', (req, res) => {
 
 router.post('/', (req, res) => {
     const { sessionId, phoneNumber, text } = req.body;
-
-    // Set header for Africa's Talking compatibility
     res.set('Content-Type', 'text/plain');
 
     try {
