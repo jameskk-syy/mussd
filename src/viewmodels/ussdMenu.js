@@ -113,8 +113,14 @@ menu.state('savings_withdrawal', {
 
 menu.state('savings_withdrawal_process', {
     run: async () => {
-        // Implementation for withdrawal
-        menu.end('Withdrawal functionality coming soon!');
+        const amount = menu.val;
+        const phoneNumber = menu.args.phoneNumber;
+        const result = await SavingsModel.withdraw(phoneNumber, amount);
+        if (result.success) {
+            menu.end(`Successfully withdrew $${amount}. New balance is $${result.newBalance.toFixed(2)}`);
+        } else {
+            menu.end(`Error: ${result.message}`);
+        }
     }
 });
 
@@ -129,7 +135,6 @@ menu.state('loans_repay', {
 
 menu.state('loans_repay_process', {
     run: async () => {
-        // Implementation for loan repayment
         menu.end('Loan repayment functionality coming soon!');
     }
 });
