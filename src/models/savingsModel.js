@@ -1,12 +1,11 @@
 const axios = require('axios');
 const xml2js = require('xml2js');
 
-const DEPOSIT_URL = 'http://197.155.71.138:2024/api/v1/transactions/saving-deposit';
-const WITHDRAWAL_URL = 'http://197.155.71.138:2024/api/v1/transactions/saving-withdrawal';
+const DEPOSIT_URL = process.env.SAVINGS_DEPOSIT_URL;
+const WITHDRAWAL_URL = process.env.SAVINGS_WITHDRAWAL_URL;
 
 class SavingsModel {
     static async getBalance(phoneNumber) {
-        // Mocking balance for now as no balance endpoint was provided in XML docs
         return { success: true, balance: 1000.00 };
     }
 
@@ -113,7 +112,7 @@ class SavingsModel {
     }
 
     static async getStatements(phoneNumber) {
-        return { success: true, statements: [] }; // Placeholder
+        return { success: true, statements: [] };
     }
 }
 

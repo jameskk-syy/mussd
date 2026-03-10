@@ -9,14 +9,14 @@ class UserModel {
             };
 
             const response = await axios.post(process.env.AUTH_API_URL, payload, {
-                timeout: 9000 // 9 seconds timeout to stay under AT's 10s limit
+                timeout: 9000
             });
 
             if (response.data && response.data.entity && response.data.entity.token) {
                 return {
                     success: true,
                     token: response.data.entity.token,
-                    entityId: response.data.entity.id, // Using .id as seen in your sample response
+                    entityId: response.data.entity.id,
                     user: {
                         name: response.data.entity.firstName + ' ' + response.data.entity.lastName
                     }
