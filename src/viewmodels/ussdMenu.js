@@ -47,7 +47,7 @@ menu.state('login', {
                 sessions[menu.args.sessionId]['token'] = result.token;
                 sessions[menu.args.sessionId]['entityId'] = result.entityId;
 
-                menu.con(`Welcome back \n1. Savings\n2. Loans\n3. Account Settings`);
+                menu.con(`Welcome back \n1. Deposit\n2. Withdrawal\n3. Check Balance\n4. Statement\n5. Repay Loan\n6. Apply Loan`);
             } else {
                 menu.end('Login failed. ' + result.message);
             }
@@ -56,54 +56,81 @@ menu.state('login', {
         }
     },
     next: {
-        '1': 'savingsMenu',
-        '2': 'loansMenu',
-        '3': 'accountMenu'
+        '1': 'savings_deposit',
+        '2': 'savings_withdrawal',
+        '3': 'balanceMenu',
+        '4': 'statementMenu',
+        '5': 'loans_repay',
+        '6': 'loans_apply'
     }
 });
 
-menu.state('savingsMenu', {
-    run: () => {
-        menu.con('Savings Menu:\n1. Check Balance\n2. Make a Deposit\n3. Savings Statements\n0. Back');
-    },
-    next: {
-        '1': 'savings_balance',
-        '2': 'savings_deposit',
-        '3': 'savings_statement',
-        '0': 'mainMenu'
-    }
-});
-
-menu.state('loansMenu', {
-    run: () => {
-        menu.con('Loans Menu:\n1. Check Active Loans\n2. Loan Statements\n3. Apply Loan\n0. Back');
-    },
-    next: {
-        '1': 'loans_active',
-        '2': 'loans_statement',
-        '3': 'loans_apply',
-        '0': 'mainMenu'
-    }
-});
-
-menu.state('accountMenu', {
-    run: () => {
-        menu.con('Account Menu:\n1. Change Password\n0. Back');
-    },
-    next: {
-        '1': 'account_change_password',
-        '0': 'mainMenu'
-    }
-});
 
 menu.state('mainMenu', {
     run: () => {
-        menu.con(`Main Menu:\n1. Savings\n2. Loans\n3. Account Settings`);
+        menu.con(`Main Menu:\n1. Deposit\n2. Withdrawal\n3. Check Balance\n4. Statement\n5. Repay Loan\n6. Apply Loan`);
     },
     next: {
-        '1': 'savingsMenu',
-        '2': 'loansMenu',
-        '3': 'accountMenu'
+        '1': 'savings_deposit',
+        '2': 'savings_withdrawal',
+        '3': 'balanceMenu',
+        '4': 'statementMenu',
+        '5': 'loans_repay',
+        '6': 'loans_apply'
+    }
+});
+
+menu.state('balanceMenu', {
+    run: () => {
+        menu.con('Check Balance:\n1. Savings\n2. Loan\n0. Back');
+    },
+    next: {
+        '1': 'savings_balance',
+        '2': 'loans_active',
+        '0': 'mainMenu'
+    }
+});
+
+menu.state('statementMenu', {
+    run: () => {
+        menu.con('Statement:\n1. Savings\n2. Loans\n0. Back');
+    },
+    next: {
+        '1': 'savings_statement',
+        '2': 'loans_statement',
+        '0': 'mainMenu'
+    }
+});
+
+menu.state('savings_withdrawal', {
+    run: () => {
+        menu.con('Enter amount to withdraw:');
+    },
+    next: {
+        '*\\d+': 'savings_withdrawal_process'
+    }
+});
+
+menu.state('savings_withdrawal_process', {
+    run: async () => {
+        // Implementation for withdrawal
+        menu.end('Withdrawal functionality coming soon!');
+    }
+});
+
+menu.state('loans_repay', {
+    run: () => {
+        menu.con('Enter amount to repay:');
+    },
+    next: {
+        '*\\d+': 'loans_repay_process'
+    }
+});
+
+menu.state('loans_repay_process', {
+    run: async () => {
+        // Implementation for loan repayment
+        menu.end('Loan repayment functionality coming soon!');
     }
 });
 
