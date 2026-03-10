@@ -12,6 +12,8 @@ class UserModel {
                 timeout: 9000
             });
 
+            console.log('[Auth] Response Data:', JSON.stringify(response.data));
+
             if (response.data && response.data.entity && response.data.entity.token) {
                 return {
                     success: true,

@@ -8,6 +8,7 @@ router.get('/', (req, res) => {
 });
 
 router.post('/', (req, res) => {
+    console.log('[USSD Router] Incoming Request:', JSON.stringify(req.body));
     const { sessionId, phoneNumber, text } = req.body;
     res.set('Content-Type', 'text/plain');
 

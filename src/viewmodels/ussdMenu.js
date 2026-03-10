@@ -43,15 +43,19 @@ menu.state('login', {
         try {
             const result = await UserModel.authenticate(username, password);
             if (result.success) {
-                if (!sessions[menu.args.sessionId]) sessions[menu.args.sessionId] = {};
-                sessions[menu.args.sessionId]['token'] = result.token;
-                sessions[menu.args.sessionId]['entityId'] = result.entityId;
+                // Use menu.session.set to ensure callbacks are triggered
+                await new Promise(resolve => menu.session.set(menu.args.sessionId, 'token', result.token, resolve));
+                await new Promise(resolve => menu.session.set(menu.args.sessionId, 'entityId', result.entityId, resolve));
+
+                console.log(`[Login] Success. SID: ${menu.args.sessionId}, EntityId: ${result.entityId}`);
 
                 menu.con(`Welcome back \n1. Deposit\n2. Withdrawal\n3. Check Balance\n4. Statement\n5. Repay Loan\n6. Apply Loan`);
             } else {
+                console.log(`[Login] Failed. SID: ${menu.args.sessionId}, Message: ${result.message}`);
                 menu.end('Login failed. ' + result.message);
             }
         } catch (error) {
+            console.error(`[Login] Error SID: ${menu.args.sessionId}`, error);
             menu.end('An error occurred during login. Please try again later.');
         }
     },
@@ -115,7 +119,11 @@ menu.state('savings_withdrawal_process', {
     run: async () => {
         const amount = menu.val;
         const phoneNumber = menu.args.phoneNumber;
-        const entityId = sessions[menu.args.sessionId] ? sessions[menu.args.sessionId]['entityId'] : null;
+
+        // Use menu.session.get to retrieve entityId
+        const entityId = await new Promise(resolve => menu.session.get(menu.args.sessionId, 'entityId', (err, val) => resolve(val)));
+
+        console.log(`[Withdrawal] Request. SID: ${menu.args.sessionId}, EntityId: ${entityId}, Amount: ${amount}`);
 
         const result = await SavingsModel.withdraw(phoneNumber, amount, entityId);
         if (result.success) {
@@ -166,8 +174,12 @@ menu.state('savings_deposit_process', {
     run: async () => {
         const amount = menu.val;
         const phoneNumber = menu.args.phoneNumber;
-        const entityId = sessions[menu.args.sessionId] ? sessions[menu.args.sessionId]['entityId'] : null;
-        console.log("entityId", entityId);
+
+        // Use menu.session.get to retrieve entityId
+        const entityId = await new Promise(resolve => menu.session.get(menu.args.sessionId, 'entityId', (err, val) => resolve(val)));
+
+        console.log(`[Deposit] Request. SID: ${menu.args.sessionId}, EntityId: ${entityId}, Amount: ${amount}`);
+
         const result = await SavingsModel.deposit(phoneNumber, amount, entityId);
         if (result.success) {
             menu.end(`Successfully deposited $${amount}. New balance is $${result.newBalance.toFixed(2)}`);

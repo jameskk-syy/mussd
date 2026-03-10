@@ -13,9 +13,7 @@ class SavingsModel {
         const username = phoneNumber.replace('+', '');
         const ref = 'REF' + Date.now();
         const msgId = 'MSG' + Date.now();
-        const bankCode = entityId;
-
-        console.log(bankCode);
+        const bankCode = entityId || '2001'; // Default if missing
 
         const xml = `
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:vmt="http://VMTComponentModel/InterfaceSpecification/Interfaces/C4/VMTtoFSPService" xmlns:c4="http://VMTComponentModel/InterfaceSpecification/FSPDefined/Messages/C4/" xmlns:vmt1="http://schemas.datacontract.org/2004/07/VMT.BankingIntegration.FSIC4Simulator.Common">
@@ -42,6 +40,8 @@ class SavingsModel {
    </soapenv:Body>
 </soapenv:Envelope>`;
 
+        console.log(`[SavingsModel] Sending Deposit XML for ${username} (Bank: ${bankCode}):`, xml);
+
         try {
             const response = await axios.post(DEPOSIT_URL, xml, {
                 headers: { 'Content-Type': 'text/xml' },
@@ -67,7 +67,7 @@ class SavingsModel {
         const username = phoneNumber.replace('+', '');
         const ref = 'REF' + Date.now();
         const msgId = 'MSG' + Date.now();
-        const bankCode = entityId;
+        const bankCode = entityId || '2001';
 
         const xml = `
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:vmt="http://VMTComponentModel/InterfaceSpecification/Interfaces/C4/VMTtoFSPService" xmlns:c4="http://VMTComponentModel/InterfaceSpecification/FSPDefined/Messages/C4/" xmlns:vmt1="http://schemas.datacontract.org/2004/07/VMT.BankingIntegration.FSIC4Simulator.Common">
@@ -93,6 +93,8 @@ class SavingsModel {
       </vmt:VMTInitiatedSavingsWithdrawal>
    </soapenv:Body>
 </soapenv:Envelope>`;
+
+        console.log(`[SavingsModel] Sending Withdrawal XML for ${username} (Bank: ${bankCode}):`, xml);
 
         try {
             const response = await axios.post(WITHDRAWAL_URL, xml, {
