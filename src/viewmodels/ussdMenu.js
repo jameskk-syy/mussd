@@ -167,7 +167,7 @@ menu.state('savings_deposit_process', {
         const amount = menu.val;
         const phoneNumber = menu.args.phoneNumber;
         const entityId = sessions[menu.args.sessionId] ? sessions[menu.args.sessionId]['entityId'] : null;
-
+        console.log("entityId", entityId);
         const result = await SavingsModel.deposit(phoneNumber, amount, entityId);
         if (result.success) {
             menu.end(`Successfully deposited $${amount}. New balance is $${result.newBalance.toFixed(2)}`);
