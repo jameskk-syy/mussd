@@ -8,13 +8,9 @@ class UserModel {
                 password: password
             };
 
-            //console.log(`[Auth Tracing] Sending request to ${process.env.AUTH_API_URL}`);
-
             const response = await axios.post(process.env.AUTH_API_URL, payload, {
-                timeout: 15000 // 15 seconds timeout
+                timeout: 9000 // 9 seconds timeout to stay under AT's 10s limit
             });
-
-            //console.log(`[Auth Tracing] Response received. Status: ${response.status}`);
 
             if (response.data && response.data.entity && response.data.entity.token) {
                 return {
@@ -26,7 +22,6 @@ class UserModel {
                     }
                 };
             } else {
-                //console.warn(`[Auth Tracing] Invalid response structure: ${JSON.stringify(response.data)}`);
                 return {
                     success: false,
                     message: response.data.message || 'Invalid credentials'
@@ -34,10 +29,8 @@ class UserModel {
             }
         } catch (error) {
             if (error.code === 'ECONNABORTED') {
-                //console.error('[Auth Tracing] Request timed out (15s)');
-                return { success: false, message: 'Authentication timed out' };
+                return { success: false, message: 'Authentication timed out (Backend slow)' };
             }
-            //console.error('[Auth Tracing] API Error:', error.response ? JSON.stringify(error.response.data) : error.message);
             return {
                 success: false,
                 message: 'Authentication service unavailable'

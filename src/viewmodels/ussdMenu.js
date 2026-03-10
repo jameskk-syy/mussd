@@ -8,24 +8,20 @@ let menu = new UssdMenu();
 const sessions = {};
 menu.sessionConfig({
     start: (sessionId, callback) => {
-        //console.log(`[Session Start] SID: ${sessionId}`);
         if (!(sessionId in sessions)) sessions[sessionId] = {};
         callback();
     },
     end: (sessionId, callback) => {
-        //console.log(`[Session End] SID: ${sessionId}`);
         delete sessions[sessionId];
         callback();
     },
     set: (sessionId, key, value, callback) => {
-        //console.log(`[Session Set] SID: ${sessionId}, Key: ${key}, Value: ${value}`);
         if (!sessions[sessionId]) sessions[sessionId] = {};
         sessions[sessionId][key] = value;
         callback();
     },
     get: (sessionId, key, callback) => {
         const value = sessions[sessionId] ? sessions[sessionId][key] : null;
-        //console.log(`[Session Get] SID: ${sessionId}, Key: ${key}, Value: ${value}`);
         callback(null, value);
     }
 });
@@ -41,8 +37,6 @@ menu.startState({
 menu.state('passwordPrompt', {
     run: () => {
         const username = menu.val;
-
-        // Synchronous store
         if (!sessions[menu.args.sessionId]) sessions[menu.args.sessionId] = {};
         sessions[menu.args.sessionId]['username'] = username;
 
@@ -56,26 +50,19 @@ menu.state('passwordPrompt', {
 menu.state('login', {
     run: async () => {
         const password = menu.val;
-
-        // Synchronous retrieval
         const username = sessions[menu.args.sessionId] ? sessions[menu.args.sessionId]['username'] : null;
-        console.log(`[Login Tracing] Attempting login for Username: ${username}, SID: ${menu.args.sessionId}`);
 
         if (!username) {
-            console.warn(`[Login Tracing] Username not found in session for SID: ${menu.args.sessionId}`);
             return menu.end('Login process failed. Please start over.');
         }
 
         try {
-            console.log(`[Login Tracing] Calling UserModel.authenticate...`);
             const result = await UserModel.authenticate(username, password);
-            console.log(`[Login Tracing] Auth Result: ${result.success ? 'Success' : 'Failure - ' + result.message}`);
             if (result.success) {
-                await new Promise((resolve) => {
-                    menu.session.set('token', result.token, () => {
-                        menu.session.set('entityId', result.entityId, resolve);
-                    });
-                });
+                if (!sessions[menu.args.sessionId]) sessions[menu.args.sessionId] = {};
+                sessions[menu.args.sessionId]['token'] = result.token;
+                sessions[menu.args.sessionId]['entityId'] = result.entityId;
+
                 menu.con(`Welcome back \n1. Savings\n2. Loans\n3. Account Settings`);
             } else {
                 menu.end('Login failed. ' + result.message);
