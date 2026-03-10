@@ -115,7 +115,9 @@ menu.state('savings_withdrawal_process', {
     run: async () => {
         const amount = menu.val;
         const phoneNumber = menu.args.phoneNumber;
-        const result = await SavingsModel.withdraw(phoneNumber, amount);
+        const entityId = sessions[menu.args.sessionId] ? sessions[menu.args.sessionId]['entityId'] : null;
+
+        const result = await SavingsModel.withdraw(phoneNumber, amount, entityId);
         if (result.success) {
             menu.end(`Successfully withdrew $${amount}. New balance is $${result.newBalance.toFixed(2)}`);
         } else {
@@ -164,7 +166,9 @@ menu.state('savings_deposit_process', {
     run: async () => {
         const amount = menu.val;
         const phoneNumber = menu.args.phoneNumber;
-        const result = await SavingsModel.deposit(phoneNumber, amount);
+        const entityId = sessions[menu.args.sessionId] ? sessions[menu.args.sessionId]['entityId'] : null;
+
+        const result = await SavingsModel.deposit(phoneNumber, amount, entityId);
         if (result.success) {
             menu.end(`Successfully deposited $${amount}. New balance is $${result.newBalance.toFixed(2)}`);
         } else {

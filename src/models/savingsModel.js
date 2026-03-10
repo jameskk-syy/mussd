@@ -9,18 +9,18 @@ class SavingsModel {
         return { success: true, balance: 1000.00 };
     }
 
-    static async deposit(phoneNumber, amount) {
+    static async deposit(phoneNumber, amount, entityId) {
         const username = phoneNumber.replace('+', '');
         const ref = 'REF' + Date.now();
         const msgId = 'MSG' + Date.now();
-        console.log(username, ref, msgId);
+        const bankCode = entityId || '2001';
 
         const xml = `
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:vmt="http://VMTComponentModel/InterfaceSpecification/Interfaces/C4/VMTtoFSPService" xmlns:c4="http://VMTComponentModel/InterfaceSpecification/FSPDefined/Messages/C4/" xmlns:vmt1="http://schemas.datacontract.org/2004/07/VMT.BankingIntegration.FSIC4Simulator.Common">
    <soapenv:Body>
       <vmt:VMTInitiatedSavingsDeposit>
          <vmt:request>
-            <c4:BankShortCode>2001</c4:BankShortCode>
+            <c4:BankShortCode>${bankCode}</c4:BankShortCode>
             <c4:FSIIdentityId>
                <vmt1:MSISDN>${username}</vmt1:MSISDN>
                <vmt1:VmtReferenceNumber>${ref}</vmt1:VmtReferenceNumber>
@@ -61,17 +61,18 @@ class SavingsModel {
         }
     }
 
-    static async withdraw(phoneNumber, amount) {
+    static async withdraw(phoneNumber, amount, entityId) {
         const username = phoneNumber.replace('+', '');
         const ref = 'REF' + Date.now();
         const msgId = 'MSG' + Date.now();
+        const bankCode = entityId || '2001';
 
         const xml = `
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:vmt="http://VMTComponentModel/InterfaceSpecification/Interfaces/C4/VMTtoFSPService" xmlns:c4="http://VMTComponentModel/InterfaceSpecification/FSPDefined/Messages/C4/" xmlns:vmt1="http://schemas.datacontract.org/2004/07/VMT.BankingIntegration.FSIC4Simulator.Common">
    <soapenv:Body>
       <vmt:VMTInitiatedSavingsWithdrawal>
          <vmt:request>
-            <c4:BankShortCode>2001</c4:BankShortCode>
+            <c4:BankShortCode>${bankCode}</c4:BankShortCode>
             <c4:FSIIdentityId>
                <vmt1:MSISDN>${username}</vmt1:MSISDN>
                <vmt1:VmtReferenceNumber>${ref}</vmt1:VmtReferenceNumber>
