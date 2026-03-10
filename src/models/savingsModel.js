@@ -13,7 +13,9 @@ class SavingsModel {
         const username = phoneNumber.replace('+', '');
         const ref = 'REF' + Date.now();
         const msgId = 'MSG' + Date.now();
-        const bankCode = entityId || '2001';
+        const bankCode = entityId;
+
+        console.log(bankCode);
 
         const xml = `
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:vmt="http://VMTComponentModel/InterfaceSpecification/Interfaces/C4/VMTtoFSPService" xmlns:c4="http://VMTComponentModel/InterfaceSpecification/FSPDefined/Messages/C4/" xmlns:vmt1="http://schemas.datacontract.org/2004/07/VMT.BankingIntegration.FSIC4Simulator.Common">
@@ -65,7 +67,7 @@ class SavingsModel {
         const username = phoneNumber.replace('+', '');
         const ref = 'REF' + Date.now();
         const msgId = 'MSG' + Date.now();
-        const bankCode = entityId || '2001';
+        const bankCode = entityId;
 
         const xml = `
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:vmt="http://VMTComponentModel/InterfaceSpecification/Interfaces/C4/VMTtoFSPService" xmlns:c4="http://VMTComponentModel/InterfaceSpecification/FSPDefined/Messages/C4/" xmlns:vmt1="http://schemas.datacontract.org/2004/07/VMT.BankingIntegration.FSIC4Simulator.Common">
